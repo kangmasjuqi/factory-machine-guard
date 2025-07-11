@@ -1,0 +1,75 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font (Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 19px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh; /* Full height for the main container */
+}
+
+.anomaly-panel {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.anomaly-panel .list-panel {
+    width: 20%;
+    background-color: yellow;
+    padding: 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #ccc;
+}
+.anomaly-panel .main-panel {
+    width: 80%;
+    background-color: orange;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: 100vh; /* Full height for scrolling */
+}
+
+.anomaly-panel .list-panel ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.anomaly-panel .list-panel li {
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.anomaly-panel .list-panel li:hover {
+    background-color: #f0f0f0;
+}
+
+.bg-orange-anomaly-type {
+    background-color: #fdba74;
+}
+
+.bg-blue-alert{
+    background-color: #3577f6;
+}
+
+.bg-update-button {
+    background-color: #536af6;
+}
+
+h1.title-section {
+    font-size: 19px;
+}
