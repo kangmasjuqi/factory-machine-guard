@@ -71,15 +71,15 @@ const AnomalyList = ({ selectedAnomaly, onAnomalySelect, refreshTrigger, formatD
               <option key={type} value={type}>{type}</option>
             ))}
           </select>
-          <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-gray-600 pointer-events-none" />
+            <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-black fill-black pointer-events-none" />
         </div>
       </div>
 
       {/* Back Button */}
       <div className="p-4 border-b border-gray-200">
         <button className="flex items-center gap-2 text-sm text-gray-800 hover:text-gray-600">
-          <ChevronLeft className="w-4 h-4" />
-          Back
+            <ChevronLeft className="w-4 h-4 text-black fill-black" />
+            Back
         </button>
       </div>
 

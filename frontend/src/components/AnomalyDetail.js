@@ -132,7 +132,7 @@ const handleUpdate = async () => {
                             <option value="Router Fault">[Milling] Router Fault</option>
                             <option value="Normal">Normal</option>
                         </select>
-                        <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-gray-600 pointer-events-none" />
+                        <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-black fill-black pointer-events-none" />
                         </div>
                     </div>
 
@@ -151,7 +151,7 @@ const handleUpdate = async () => {
                             <option value="later">Later</option>
                             <option value="no action">No Action</option>
                         </select>
-                        <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-gray-600 pointer-events-none" />
+                        <ChevronDown className="absolute right-2 top-2.5 w-4 h-4 text-black fill-black pointer-events-none" />
                         </div>
                     </div>
 

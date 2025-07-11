@@ -71,7 +71,10 @@ body {
 }
 
 h1.title-section {
-    font-size: 19px;
+    font-size: 22px;
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
 }
 
 .bg-menu-alert {

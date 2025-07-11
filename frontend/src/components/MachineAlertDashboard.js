@@ -52,9 +52,9 @@ const MachineAlertDashboard = () => {
           <div className="flex items-center gap-8">
             <img src="/logo.svg" alt="GROUNDUP.AI Logo" className="h-8" />
             <nav className="flex items-center gap-6">
-                <div className="text-sm text-gray-600">DASHBOARD</div>
-                <div className="relative bg-menu-alert px-2 py-2" style={{ borderBottom: '4px solid red' }}>
-                    <div className="text-sm text-gray-600">ALERTS</div>
+                <div className="text-gray-600">DASHBOARD</div>
+                <div className="relative bg-menu-alert px-2 py-2" style={{ borderBottom: '4px solid #3577f6' }}>
+                    <div className="text-gray-600">ALERTS</div>
                 </div>
             </nav>
 
