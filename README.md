@@ -25,6 +25,8 @@ Every day, employees record noise from running **CNC** and **Milling Machines** 
 | Node.js    | v20.19.2       |
 | npm        | v10.8.2        |
 | PostgreSQL | v14.18         |
+| Node.js(FE)| v18.16.0       |
+| npm (FE)   | 9.5.1          |
 
 ---
 
