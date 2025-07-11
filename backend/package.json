@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "joi": "^17.13.3",
+    "node-pg-migrate": "^8.0.3",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7"
+  }
+}
