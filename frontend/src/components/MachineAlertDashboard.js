@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { Settings, Bell, User, ChevronDown, ChevronLeft, Play, Volume2 } from 'lucide-react';
+import { Settings, Bell, User } from 'lucide-react';
 import AnomalyList from './AnomalyList';
 import AnomalyDetail from './AnomalyDetail';
 import { updateAnomaly} from '../api';
 
 const MachineAlertDashboard = () => {
-  const [selectedAlert, setSelectedAlert] = useState(0);
-  const [suspectedReason, setSuspectedReason] = useState('Unknown Anomally');
-  const [actionRequired, setActionRequired] = useState('Select Action');
-  const [comments, setComments] = useState('');
   const [refreshList, setRefreshList] = useState(0);
   const [selectedAnomaly, setSelectedAnomaly] = useState(null);
     
@@ -50,17 +46,18 @@ const MachineAlertDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border-b border-gray-200 px-6" style={{ height: '52px' }}>
+
+        <div className="flex items-center justify-between" style={{ height: '48px' }}>
           <div className="flex items-center gap-8">
-            <div className="font-bold text-xl text-gray-800">GROUNDUP.AI</div>
+            <img src="/logo.svg" alt="GROUNDUP.AI Logo" className="h-8" />
             <nav className="flex items-center gap-6">
-              <span className="text-sm text-gray-600">DASHBOARD</span>
-              <div className="relative">
-                <span className="text-sm text-gray-600">ALERTS</span>
-                <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-blue-500"></div>
-              </div>
+                <div className="text-sm text-gray-600">DASHBOARD</div>
+                <div className="relative bg-menu-alert px-2 py-2" style={{ borderBottom: '4px solid red' }}>
+                    <div className="text-sm text-gray-600">ALERTS</div>
+                </div>
             </nav>
+
           </div>
           <div className="flex items-center gap-4">
             <Settings className="w-5 h-5 text-gray-600" />

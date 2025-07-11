@@ -33,29 +33,37 @@ const Spectrogram = ({
     for (let t = 0; t < timeSteps; t++) {
       const timeColumn = [];
       for (let f = 0; f < freqBins; f++) {
-        // Create realistic spectrogram pattern
+        // Create realistic spectrogram pattern similar to the image
         let intensity = 0;
         
-        // Low frequency content (bass)
-        if (f < 15) {
-          intensity = Math.random() * 0.8 + 0.2;
+        // Very low frequency content (strong bass) - yellow/red in image
+        if (f < 8) {
+          intensity = 0.8 + Math.random() * 0.2;
         }
-        // Mid frequency content
-        else if (f < 40) {
-          intensity = Math.random() * 0.6 + Math.sin(t * 0.1) * 0.3;
+        // Low frequency content - orange/red
+        else if (f < 18) {
+          intensity = 0.6 + Math.random() * 0.3 + Math.sin(t * 0.1) * 0.1;
         }
-        // High frequency content (harmonics)
-        else if (f < 60) {
-          intensity = Math.random() * 0.4 + Math.cos(t * 0.05) * 0.2;
+        // Low-mid frequency content - red/magenta
+        else if (f < 30) {
+          intensity = 0.4 + Math.random() * 0.3 + Math.cos(t * 0.05) * 0.1;
         }
-        // Very high frequencies (noise)
+        // Mid frequency content - magenta/purple
+        else if (f < 45) {
+          intensity = 0.2 + Math.random() * 0.2;
+        }
+        // High frequency content - purple/blue
+        else if (f < 65) {
+          intensity = 0.1 + Math.random() * 0.15;
+        }
+        // Very high frequencies - dark purple/blue
         else {
-          intensity = Math.random() * 0.2;
+          intensity = 0.05 + Math.random() * 0.1;
         }
         
-        // Add some random spikes
-        if (Math.random() < 0.05) {
-          intensity += Math.random() * 0.5;
+        // Add some random variations
+        if (Math.random() < 0.03) {
+          intensity += Math.random() * 0.3;
         }
         
         intensity = Math.max(0, Math.min(1, intensity));
@@ -69,28 +77,43 @@ const Spectrogram = ({
       for (let f = 0; f < freqBins; f++) {
         const intensity = spectrogramData[t][f];
         
-        // Create color based on intensity
+        // Create color based on intensity - matching the purple to yellow colormap
         let r, g, b;
-        if (intensity < 0.25) {
+        if (intensity < 0.1) {
+          // Very dark purple/black
+          r = Math.floor(20 + intensity * 10 * 30);
+          g = Math.floor(0 + intensity * 10 * 20);
+          b = Math.floor(40 + intensity * 10 * 60);
+        } else if (intensity < 0.3) {
           // Dark purple to purple
-          r = Math.floor(50 + intensity * 4 * 100);
-          g = Math.floor(0 + intensity * 4 * 50);
-          b = Math.floor(100 + intensity * 4 * 155);
+          const t_norm = (intensity - 0.1) / 0.2;
+          r = Math.floor(50 + t_norm * 80);
+          g = Math.floor(20 + t_norm * 30);
+          b = Math.floor(100 + t_norm * 100);
         } else if (intensity < 0.5) {
           // Purple to magenta
-          r = Math.floor(150 + (intensity - 0.25) * 4 * 105);
-          g = Math.floor(50 + (intensity - 0.25) * 4 * 50);
-          b = Math.floor(255 - (intensity - 0.25) * 4 * 100);
-        } else if (intensity < 0.75) {
+          const t_norm = (intensity - 0.3) / 0.2;
+          r = Math.floor(130 + t_norm * 125);
+          g = Math.floor(50 + t_norm * 50);
+          b = Math.floor(200 - t_norm * 80);
+        } else if (intensity < 0.7) {
           // Magenta to red
+          const t_norm = (intensity - 0.5) / 0.2;
           r = 255;
-          g = Math.floor(100 + (intensity - 0.5) * 4 * 155);
-          b = Math.floor(155 - (intensity - 0.5) * 4 * 155);
+          g = Math.floor(100 - t_norm * 50);
+          b = Math.floor(120 - t_norm * 120);
+        } else if (intensity < 0.85) {
+          // Red to orange
+          const t_norm = (intensity - 0.7) / 0.15;
+          r = 255;
+          g = Math.floor(50 + t_norm * 150);
+          b = Math.floor(0);
         } else {
-          // Red to yellow
+          // Orange to yellow
+          const t_norm = (intensity - 0.85) / 0.15;
           r = 255;
-          g = Math.floor(255);
-          b = Math.floor((1 - intensity) * 4 * 255);
+          g = Math.floor(200 + t_norm * 55);
+          b = Math.floor(t_norm * 100);
         }
         
         ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
@@ -181,4 +204,5 @@ const Spectrogram = ({
     </div>
   );
 };
+
 export default Spectrogram;

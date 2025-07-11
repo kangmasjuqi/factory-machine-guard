@@ -40,7 +40,7 @@ function App() {
           // Show main application content if logged in
           <div className="space-y-8">
             {/* Machine Alert Dashboard */}
-            <div className="bg-white p-2">
+            <div className="bg-white">
                 <MachineAlertDashboard refreshTrigger={refreshList} />
             </div>
           </div>

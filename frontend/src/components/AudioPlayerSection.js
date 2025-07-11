@@ -98,15 +98,15 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
       {/* Controls */}
       <div className={`flex items-center gap-4 ${bgColor} p-2 rounded-full w-[60%]`}>
         <button
-          onClick={togglePlay}
-          disabled={!audioPath || error}
-          className={`flex items-center justify-center w-8 h-8 ${bgColor} ${textColor} hover:opacity-80 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed`}
+            onClick={togglePlay}
+            disabled={!audioPath || error}
+            className="w-8 h-8 text-black hover:opacity-80 transition-opacity disabled:text-gray-400 disabled:cursor-not-allowed"
         >
-          {isPlaying ? (
+        {isPlaying ? (
             <Pause className="w-6 h-6" />
-          ) : (
+        ) : (
             <Play className="w-6 h-6 ml-1" />
-          )}
+        )}
         </button>
 
         <div className="flex items-center gap-2">

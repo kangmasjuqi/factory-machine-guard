@@ -163,8 +163,9 @@ curl -X GET http://localhost:4000/api/anomalies
 
 ---
 
-## 💡 Future Enhancements
+## 💡 [TODO] Future Enhancements
 
-- Automatic anomaly classification using ML
+- UI improvements
 - User login and roles (Operator, Engineer, Admin)
+- Automatic anomaly classification using ML
 - Alert notifications (e.g., Slack, Email)

@@ -125,7 +125,17 @@ const AnomalyList = ({ selectedAnomaly, onAnomalySelect, refreshTrigger, formatD
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-sm text-gray-600">ID #{String(anomaly.id).padStart(8, '0')}</span>
-                        <div className="bg-orange-anomaly-type text-white px-2 py-1 rounded-full text-xs">
+                        <div
+                            className={`px-2 py-1 rounded-full text-xs text-white ${
+                                anomaly.anomaly_type === 'Mild'
+                                ? 'bg-green-500'
+                                : anomaly.anomaly_type === 'Moderate'
+                                ? 'bg-amber-500'
+                                : anomaly.anomaly_type === 'Severe'
+                                ? 'bg-red-500'
+                                : 'bg-gray-400'
+                            }`}
+                            >
                             {anomaly.anomaly_type}
                         </div>
                     </div>
