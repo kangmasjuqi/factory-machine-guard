@@ -10,9 +10,6 @@ Every day, employees record noise from running **CNC** and **Milling Machines** 
 - Analyze noise patterns.
 - Tag anomalies with suspected reasons and required actions.
 
-<img width="1440" height="1381" alt="page" src="https://github.com/user-attachments/assets/6e0deb8d-6add-48a2-9922-dc4dc5c3617b" />
-
-
 ---
 
 ## 🧰 Tech Stack
