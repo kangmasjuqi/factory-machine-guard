@@ -139,7 +139,7 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
 
       {/* Spectrogram */}
       <div className="flex flex-col">
-        <Spectrogram width={480} height={400} />
+        <Spectrogram id={id} audioBuffer={audioBuffer} width={480} height={400} />
       </div>
     </div>
   );

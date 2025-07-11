@@ -1,12 +1,167 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 const Spectrogram = ({ 
+  id,
+  audioBuffer,
   width = 480, 
   height = 400, 
   timeRange = [0, 54], // [start, end] in seconds
   freqRange = [0, 8192] // [start, end] in Hz
 }) => {
   const canvasRef = useRef(null);
+
+  const generateSampleData = useCallback(() => {
+    const timeSteps = 100;
+    const freqBins = 80;
+    const spectrogramData = [];
+
+    for (let t = 0; t < timeSteps; t++) {
+      const timeColumn = [];
+      for (let f = 0; f < freqBins; f++) {
+        let intensity = 0;
+        
+        // Very low frequency content (strong bass)
+        if (f < 8) {
+          intensity = 0.8 + Math.random() * 0.2;
+        }
+        // Low frequency content
+        else if (f < 18) {
+          intensity = 0.6 + Math.random() * 0.3 + Math.sin(t * 0.1) * 0.1;
+        }
+        // Low-mid frequency content
+        else if (f < 30) {
+          intensity = 0.4 + Math.random() * 0.3 + Math.cos(t * 0.05) * 0.1;
+        }
+        // Mid frequency content
+        else if (f < 45) {
+          intensity = 0.2 + Math.random() * 0.2;
+        }
+        // High frequency content
+        else if (f < 65) {
+          intensity = 0.1 + Math.random() * 0.15;
+        }
+        // Very high frequencies
+        else {
+          intensity = 0.05 + Math.random() * 0.1;
+        }
+        
+        // Add some random variations
+        if (Math.random() < 0.03) {
+          intensity += Math.random() * 0.3;
+        }
+        
+        intensity = Math.max(0, Math.min(1, intensity));
+        timeColumn.push(intensity);
+      }
+      spectrogramData.push(timeColumn);
+    }
+    
+    return spectrogramData;
+  }, []);
+
+  const generateSpectrogramData = useCallback((audioBuffer) => {
+    if (!audioBuffer || !audioBuffer.getChannelData) {
+      // Fallback to sample data if no valid audio buffer
+      return generateSampleData();
+    }
+
+    try {
+      const audioData = audioBuffer.getChannelData(0);
+      const sampleRate = audioBuffer.sampleRate;
+      const duration = audioBuffer.duration;
+      
+      // Simple spectrogram generation
+      const timeSteps = 100;
+      const freqBins = 80;
+      const spectrogramData = [];
+      
+      const samplesPerTimeStep = Math.floor(audioData.length / timeSteps);
+      
+      for (let t = 0; t < timeSteps; t++) {
+        const timeColumn = [];
+        const startSample = t * samplesPerTimeStep;
+        const endSample = Math.min(startSample + samplesPerTimeStep, audioData.length);
+        
+        for (let f = 0; f < freqBins; f++) {
+          // Simple frequency analysis - calculate energy in frequency bands
+          let energy = 0;
+          const bandSize = Math.floor(samplesPerTimeStep / freqBins);
+          const bandStart = startSample + f * bandSize;
+          const bandEnd = Math.min(bandStart + bandSize, endSample);
+          
+          // Calculate RMS energy for this frequency band
+          for (let i = bandStart; i < bandEnd; i++) {
+            if (i < audioData.length) {
+              energy += audioData[i] * audioData[i];
+            }
+          }
+          
+          energy = Math.sqrt(energy / (bandEnd - bandStart));
+          
+          // Apply some frequency-dependent weighting
+          let intensity = energy * 10; // Scale up for visibility
+          
+          // Add frequency-dependent falloff (higher frequencies typically have less energy)
+          const freqFactor = 1 - (f / freqBins) * 0.7;
+          intensity *= freqFactor;
+          
+          // Clamp to 0-1 range
+          intensity = Math.max(0, Math.min(1, intensity));
+          
+          timeColumn.push(intensity);
+        }
+        spectrogramData.push(timeColumn);
+      }
+      
+      return spectrogramData;
+    } catch (error) {
+      console.warn('Error processing audio buffer for spectrogram:', error);
+      return generateSampleData();
+    }
+  }, [generateSampleData]);
+
+  const getColorFromIntensity = useCallback((intensity) => {
+    let r, g, b;
+    
+    if (intensity < 0.1) {
+      // Very dark purple/black
+      r = Math.floor(20 + intensity * 10 * 30);
+      g = Math.floor(0 + intensity * 10 * 20);
+      b = Math.floor(40 + intensity * 10 * 60);
+    } else if (intensity < 0.3) {
+      // Dark purple to purple
+      const t_norm = (intensity - 0.1) / 0.2;
+      r = Math.floor(50 + t_norm * 80);
+      g = Math.floor(20 + t_norm * 30);
+      b = Math.floor(100 + t_norm * 100);
+    } else if (intensity < 0.5) {
+      // Purple to magenta
+      const t_norm = (intensity - 0.3) / 0.2;
+      r = Math.floor(130 + t_norm * 125);
+      g = Math.floor(50 + t_norm * 50);
+      b = Math.floor(200 - t_norm * 80);
+    } else if (intensity < 0.7) {
+      // Magenta to red
+      const t_norm = (intensity - 0.5) / 0.2;
+      r = 255;
+      g = Math.floor(100 - t_norm * 50);
+      b = Math.floor(120 - t_norm * 120);
+    } else if (intensity < 0.85) {
+      // Red to orange
+      const t_norm = (intensity - 0.7) / 0.15;
+      r = 255;
+      g = Math.floor(50 + t_norm * 150);
+      b = 0;
+    } else {
+      // Orange to yellow
+      const t_norm = (intensity - 0.85) / 0.15;
+      r = 255;
+      g = Math.floor(200 + t_norm * 55);
+      b = Math.floor(t_norm * 100);
+    }
+    
+    return `rgb(${r}, ${g}, ${b})`;
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -25,98 +180,24 @@ const Spectrogram = ({
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Generate sample spectrogram data
-    const timeSteps = 100;
-    const freqBins = 80;
-    const spectrogramData = [];
+    // Generate spectrogram data
+    const spectrogramData = generateSpectrogramData(audioBuffer);
+    const timeSteps = spectrogramData.length;
+    const freqBins = spectrogramData[0]?.length || 0;
 
-    for (let t = 0; t < timeSteps; t++) {
-      const timeColumn = [];
-      for (let f = 0; f < freqBins; f++) {
-        // Create realistic spectrogram pattern similar to the image
-        let intensity = 0;
-        
-        // Very low frequency content (strong bass) - yellow/red in image
-        if (f < 8) {
-          intensity = 0.8 + Math.random() * 0.2;
-        }
-        // Low frequency content - orange/red
-        else if (f < 18) {
-          intensity = 0.6 + Math.random() * 0.3 + Math.sin(t * 0.1) * 0.1;
-        }
-        // Low-mid frequency content - red/magenta
-        else if (f < 30) {
-          intensity = 0.4 + Math.random() * 0.3 + Math.cos(t * 0.05) * 0.1;
-        }
-        // Mid frequency content - magenta/purple
-        else if (f < 45) {
-          intensity = 0.2 + Math.random() * 0.2;
-        }
-        // High frequency content - purple/blue
-        else if (f < 65) {
-          intensity = 0.1 + Math.random() * 0.15;
-        }
-        // Very high frequencies - dark purple/blue
-        else {
-          intensity = 0.05 + Math.random() * 0.1;
-        }
-        
-        // Add some random variations
-        if (Math.random() < 0.03) {
-          intensity += Math.random() * 0.3;
-        }
-        
-        intensity = Math.max(0, Math.min(1, intensity));
-        timeColumn.push(intensity);
-      }
-      spectrogramData.push(timeColumn);
+    if (timeSteps === 0 || freqBins === 0) {
+      ctx.fillStyle = '#000000';
+      ctx.font = '16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('No audio data available', canvasWidth / 2, canvasHeight / 2);
+      return;
     }
 
     // Draw spectrogram
     for (let t = 0; t < timeSteps; t++) {
       for (let f = 0; f < freqBins; f++) {
         const intensity = spectrogramData[t][f];
-        
-        // Create color based on intensity - matching the purple to yellow colormap
-        let r, g, b;
-        if (intensity < 0.1) {
-          // Very dark purple/black
-          r = Math.floor(20 + intensity * 10 * 30);
-          g = Math.floor(0 + intensity * 10 * 20);
-          b = Math.floor(40 + intensity * 10 * 60);
-        } else if (intensity < 0.3) {
-          // Dark purple to purple
-          const t_norm = (intensity - 0.1) / 0.2;
-          r = Math.floor(50 + t_norm * 80);
-          g = Math.floor(20 + t_norm * 30);
-          b = Math.floor(100 + t_norm * 100);
-        } else if (intensity < 0.5) {
-          // Purple to magenta
-          const t_norm = (intensity - 0.3) / 0.2;
-          r = Math.floor(130 + t_norm * 125);
-          g = Math.floor(50 + t_norm * 50);
-          b = Math.floor(200 - t_norm * 80);
-        } else if (intensity < 0.7) {
-          // Magenta to red
-          const t_norm = (intensity - 0.5) / 0.2;
-          r = 255;
-          g = Math.floor(100 - t_norm * 50);
-          b = Math.floor(120 - t_norm * 120);
-        } else if (intensity < 0.85) {
-          // Red to orange
-          const t_norm = (intensity - 0.7) / 0.15;
-          r = 255;
-          g = Math.floor(50 + t_norm * 150);
-          b = Math.floor(0);
-        } else {
-          // Orange to yellow
-          const t_norm = (intensity - 0.85) / 0.15;
-          r = 255;
-          g = Math.floor(200 + t_norm * 55);
-          b = Math.floor(t_norm * 100);
-        }
-        
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fillStyle = getColorFromIntensity(intensity);
         
         const x = margin.left + (t / timeSteps) * plotWidth;
         const y = margin.top + plotHeight - (f / freqBins) * plotHeight;
@@ -164,7 +245,13 @@ const Spectrogram = ({
     }
 
     // X-axis labels (time in seconds)
-    const timeLabels = [0, 6, 12, 18, 24, 30, 36, 42, 48, 54];
+    const duration = audioBuffer?.duration || timeRange[1];
+    const timeLabels = [];
+    const numLabels = 10;
+    for (let i = 0; i < numLabels; i++) {
+      timeLabels.push(Math.round((duration * i) / (numLabels - 1)));
+    }
+    
     for (let i = 0; i < timeLabels.length; i++) {
       const time = timeLabels[i];
       const x = margin.left + (i / (timeLabels.length - 1)) * plotWidth;
@@ -192,7 +279,7 @@ const Spectrogram = ({
     ctx.rotate(-Math.PI / 2);
     ctx.restore();
 
-  }, [width, height, timeRange, freqRange]);
+  }, [id, audioBuffer, width, height, timeRange, freqRange, generateSpectrogramData, getColorFromIntensity]);
 
   return (
     <div className="bg-white inline-block">
