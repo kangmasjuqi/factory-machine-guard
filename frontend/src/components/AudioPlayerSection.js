@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2 } from 'lucide-react';
-import Waveform from './Waveform';
-import Spectrogram from './Spectrogram';
+import React, { useState, useRef, useEffect } from "react";
+import { Play, Pause, Volume2 } from "lucide-react";
+import Waveform from "./Waveform";
+import Spectrogram from "./Spectrogram";
 
 const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
   const audioRef = useRef(null);
@@ -16,12 +16,14 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
 
   useEffect(() => {
     const audio = new Audio(audioPath);
-    audio.crossOrigin = 'anonymous';
+    audio.crossOrigin = "anonymous";
     audioRef.current = audio;
 
-    audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
-    audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
-    audio.addEventListener('ended', () => setIsPlaying(false));
+    audio.addEventListener("loadedmetadata", () => setDuration(audio.duration));
+    audio.addEventListener("timeupdate", () =>
+      setCurrentTime(audio.currentTime),
+    );
+    audio.addEventListener("ended", () => setIsPlaying(false));
 
     const fetchAudioBuffer = async () => {
       try {
@@ -31,7 +33,7 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
         const decoded = await ctx.decodeAudioData(buf);
         setAudioBuffer(decoded);
       } catch (err) {
-        console.warn('Could not decode audio for waveform', err);
+        console.warn("Could not decode audio for waveform", err);
       }
     };
 
@@ -57,7 +59,10 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
       setIsPlaying(false);
     } else {
       audio.volume = volume;
-      audio.play().then(() => setIsPlaying(true)).catch(setError);
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(setError);
     }
   };
 
@@ -85,28 +90,30 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
   const formatTime = (s) => {
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
-    return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    return `${m}:${sec < 10 ? "0" : ""}${sec}`;
   };
 
-  const textColor = isDark ? 'text-white' : 'text-black';
-  const bgColor = isDark ? 'bg-black' : 'bg-gray-100';
+  const textColor = isDark ? "text-white" : "text-black";
+  const bgColor = isDark ? "bg-black" : "bg-gray-100";
 
   return (
     <div className="space-y-6">
       <h1 className="title-section text-lg mb-3 text-gray-700">{title}</h1>
 
       {/* Controls */}
-      <div className={`flex items-center gap-4 ${bgColor} p-2 rounded-full w-[60%]`}>
+      <div
+        className={`flex items-center gap-4 ${bgColor} p-2 rounded-full w-[60%]`}
+      >
         <button
-            onClick={togglePlay}
-            disabled={!audioPath || error}
-            className="w-8 h-8 text-black hover:opacity-80 transition-opacity disabled:text-gray-400 disabled:cursor-not-allowed"
+          onClick={togglePlay}
+          disabled={!audioPath || error}
+          className="w-8 h-8 text-black hover:opacity-80 transition-opacity disabled:text-gray-400 disabled:cursor-not-allowed"
         >
-        {isPlaying ? (
+          {isPlaying ? (
             <Pause className="w-6 h-6" />
-        ) : (
+          ) : (
             <Play className="w-6 h-6 ml-1" />
-        )}
+          )}
         </button>
 
         <div className="flex items-center gap-2">
@@ -128,10 +135,10 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
       </div>
 
       {/* Waveform */}
-      <Waveform 
-        id={id} 
-        canvasRef={canvasRef} 
-        handleSeek={handleSeek} 
+      <Waveform
+        id={id}
+        canvasRef={canvasRef}
+        handleSeek={handleSeek}
         audioBuffer={audioBuffer}
         currentTime={currentTime}
         duration={duration}
@@ -139,7 +146,12 @@ const AudioPlayerSection = ({ id, title, audioPath, isDark, anomaly }) => {
 
       {/* Spectrogram */}
       <div className="flex flex-col">
-        <Spectrogram id={id} audioBuffer={audioBuffer} width={480} height={400} />
+        <Spectrogram
+          id={id}
+          audioBuffer={audioBuffer}
+          width={480}
+          height={400}
+        />
       </div>
     </div>
   );

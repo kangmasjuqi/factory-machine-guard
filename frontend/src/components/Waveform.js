@@ -1,12 +1,19 @@
 // components/Waveform.js
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-const Waveform = ({ id, canvasRef, handleSeek, audioBuffer, currentTime, duration }) => {
+const Waveform = ({
+  id,
+  canvasRef,
+  handleSeek,
+  audioBuffer,
+  currentTime,
+  duration,
+}) => {
   useEffect(() => {
     if (!canvasRef.current || !audioBuffer) return;
 
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     const width = canvas.width;
     const height = canvas.height;
 
@@ -17,13 +24,13 @@ const Waveform = ({ id, canvasRef, handleSeek, audioBuffer, currentTime, duratio
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = '#2777b4';
+    ctx.fillStyle = "#2777b4";
     for (let i = 0; i < width; i++) {
       let min = 1.0;
       let max = -1.0;
 
       for (let j = 0; j < step; j++) {
-        const datum = data[(i * step) + j];
+        const datum = data[i * step + j];
         if (datum < min) min = datum;
         if (datum > max) max = datum;
       }
@@ -36,7 +43,7 @@ const Waveform = ({ id, canvasRef, handleSeek, audioBuffer, currentTime, duratio
     // Draw progress
     if (duration > 0) {
       const progress = (currentTime / duration) * width;
-      ctx.fillStyle = '#ef4444';
+      ctx.fillStyle = "#ef4444";
       ctx.fillRect(progress, 0, 2, height);
     }
   }, [audioBuffer, currentTime, duration, canvasRef]);
@@ -70,7 +77,8 @@ const Waveform = ({ id, canvasRef, handleSeek, audioBuffer, currentTime, duratio
 
       {!audioBuffer && (
         <div className="text-sm text-gray-500 mt-2">
-          Waveform visualization could not be loaded, but audio playback should still work.
+          Waveform visualization could not be loaded, but audio playback should
+          still work.
         </div>
       )}
     </div>

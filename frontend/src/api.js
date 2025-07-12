@@ -82,7 +82,7 @@ export const updateAnomaly = async (shoeData) => {
   const { action_required, comments, suspected_reason } = shoeData;
   if (!action_required || !comments || !suspected_reason) {
     throw new Error(
-      "All fields (action_required, comments, suspected_reason) are required for update"
+      "All fields (action_required, comments, suspected_reason) are required for update",
     );
   }
 

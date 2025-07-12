@@ -1,5 +1,5 @@
-import React from 'react';
-import AudioPlayerSection from './AudioPlayerSection';
+import React from "react";
+import AudioPlayerSection from "./AudioPlayerSection";
 
 const AudioVisualizer = ({ anomaly, audioPath }) => {
   if (!audioPath) {
